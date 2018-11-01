@@ -3,8 +3,16 @@ import ViewedItem from './ViewedItem'
 
 class ViewedContainer extends React.Component {
   render() {
+    let {viewed} = this.props
     return (
-      <div>
+      <div>Viewed
+      {Object.keys(viewed).length > 0 &&
+        <div>
+        {Object.keys(viewed).map((slug) => {
+          return <ViewedItem key={slug} article={viewed[slug]} viewArticle={this.props.viewArticle} />
+        })}
+        </div>
+      }
       </div>
     )
   }

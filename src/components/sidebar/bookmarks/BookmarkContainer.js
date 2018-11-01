@@ -4,7 +4,6 @@ import BookmarkItem from './BookmarkItem'
 class BookmarkContainer extends React.Component {
   render() {
     let {bookmarks} = this.props
-    console.log(bookmarks)
     return (
       <div>Bookmarks
       {Object.keys(bookmarks).length > 0 &&
