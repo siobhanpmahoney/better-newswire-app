@@ -36,9 +36,9 @@ class App extends Component {
       interests: ls.get('likedSections') || {},
       wireType: "latest",
     // }, this.startInterval)
-  }, this.startInterval)
+  }, () => this.startInterval("all"))
   console.log("before fetch test")
-  debugger
+
 
 
   fetch(urls["recommended"]("all"))
@@ -49,31 +49,75 @@ class App extends Component {
 
 
 
+
+  fetchRecommendedArticles = () => {
+    let interests = Object.keys(this.state.interests)
+    for (let interest of interests) {
+      this.fetchArticles(interest)
+    }
+  }
+
+
   fetchArticles = (section) => {
+    console.log("in fetch.")
+    console.log('article count: ', Object.keys(this.state[this.state.wireType]).length)
     let type = this.state.wireType
-    let articles = Object.assign({}, this.state[type])
+
     fetch(urls["recommended"](section))
     .then(response => response.json())
     .then(json => json.results.forEach((article) => {
-      if (!articles[article.slug_name]) {
-        articles[article.slug_name] = article
-      }
-
+      let articles = this.updateArticleState(section, article)
       !!this.state.viewed[article.slug_name] ? articles[article.slug_name]["viewed"] = true : articles[article.slug_name]["viewed"]=false
       !!this.state.bookmarks[article.slug_name] ? articles[article.slug_name]["bookmarked"] = true : articles[article.slug_name]["bookmarked"]=false
+      this.setState({
+        [type]: articles
+      })
     }))
-    this.setState({
-      [type]: articles
-    })
+
   }
+
+  updateArticleState = (section, article) => {
+    let currentArticleState = Object.assign({}, this.state[this.state.wireType])
+    if (section == "all") {
+      if (!currentArticleState[article.slug_name]) {
+        currentArticleState[article.slug_name] = article
+      }
+    } else {
+      if (!currentArticleState[section][article.slug_name]) {
+        currentArticleState[section][article.slug_name] = article
+      }
+    }
+    return currentArticleState
+  }
+
+
+
+
+  // fetchArticles = (section) => {
+  //   let type = this.state.wireType
+  //   let articles = Object.assign({}, this.state[type])
+  //   fetch(urls["recommended"](section))
+  //   .then(response => response.json())
+  //   .then(json => json.results.forEach((article) => {
+  //     if (!articles[article.slug_name]) {
+  //       articles[article.slug_name] = article
+  //     }
+  //
+  //     !!this.state.viewed[article.slug_name] ? articles[article.slug_name]["viewed"] = true : articles[article.slug_name]["viewed"]=false
+  //     !!this.state.bookmarks[article.slug_name] ? articles[article.slug_name]["bookmarked"] = true : articles[article.slug_name]["bookmarked"]=false
+  //   }))
+  //   this.setState({
+  //     [type]: articles
+  //   })
+  // }
 
   // fetchRecommendedArticles = () => {
   //   let interests = Object.keys(this.state.interests)
   //   for (let interest of interests)
   // }
 
-  startInterval = (fetchFn) => {
-    this.interval = setInterval(fetchFn, 10000)
+  startInterval = (sec) => {
+    this.interval = setInterval(() => this.fetchArticles(sec), 10000)
   }
 
   addBookmark = (event) => {
@@ -142,13 +186,17 @@ class App extends Component {
     return interestState
   }
 
+  toggleFeed = () => {
 
+  }
 
   render() {
     console.log("latestArticleFeed: ", Object.keys(this.state[this.state.wireType]).length)
     return (
       <div className="App">
         <h1>NYTimes Article Feed</h1>
+
+      <button o>Switch to Recommended</button>
 
         <SidebarContainer bookmarks={this.state.bookmarks} viewed={this.state.viewed} viewArticle={this.viewArticle}/>
 
