@@ -37,15 +37,22 @@ class App extends Component {
       wireType: "latest",
     // }, this.startInterval)
   }, this.startInterval)
+  console.log("before fetch test")
+  debugger
+
+
+  fetch(urls["recommended"]("all"))
+  .then(response => response.json())
+  .then(json => console.log(json))
 
   }
 
 
 
-  fetchArticles = () => {
+  fetchArticles = (section) => {
     let type = this.state.wireType
     let articles = Object.assign({}, this.state[type])
-    fetch(urls[type])
+    fetch(urls["recommended"](section))
     .then(response => response.json())
     .then(json => json.results.forEach((article) => {
       if (!articles[article.slug_name]) {
@@ -60,16 +67,21 @@ class App extends Component {
     })
   }
 
-  startInterval = () => {
-    this.interval = setInterval(this.fetchArticles, 10000)
+  // fetchRecommendedArticles = () => {
+  //   let interests = Object.keys(this.state.interests)
+  //   for (let interest of interests)
+  // }
+
+  startInterval = (fetchFn) => {
+    this.interval = setInterval(fetchFn, 10000)
   }
 
   addBookmark = (event) => {
     event.preventDefault()
-
     let slug = event.target.id
     let bookmarkState = Object.assign({}, this.state.bookmarks)
     let feedType = this.state.wireType
+
     let currentState = Object.assign({}, this.state[feedType])
 
     if (!bookmarkState[slug]) {
@@ -77,11 +89,13 @@ class App extends Component {
       bookmarkState[slug] = currentState[slug]
     }
 
+    let interestState = this.addInterest(slug)
 
     this.setState({
       [feedType]: currentState,
-      bookmarks: bookmarkState
-    })
+      bookmarks: bookmarkState,
+      interests: interestState
+    }, () => console.log(this.state))
   }
 
   viewArticle = (event) => {
@@ -91,7 +105,6 @@ class App extends Component {
     let bookmarkState = Object.assign({}, this.state.bookmarks)
     let feedType = this.state.wireType
     let currentState = Object.assign({}, this.state[feedType])
-    let interestState = Object.assign({}, this.state.interests)
 
     if (!!bookmarkState[slug]) {
       currentState[slug]["bookmarked"] = false
@@ -103,15 +116,7 @@ class App extends Component {
       viewedState[slug] = currentState[slug]
     }
 
-    if (!interestState[currentState[slug]["section"]]) {
-      interestState[currentState[slug]["section"]] = 1
-    } else {
-      interestState[currentState[slug]["section"]] += 1
-    }
-
-
-
-
+    let interestState = this.addInterest(slug)
 
     this.setState({
       [feedType]: currentState,
@@ -123,6 +128,18 @@ class App extends Component {
     const win = window.open(currentState[slug].url, '_blank');
     win.focus()
 
+  }
+
+  addInterest = (art) => {
+    let feedType = this.state.wireType
+    let currentState = Object.assign({}, this.state[feedType])
+    let interestState = Object.assign({}, this.state.interests)
+    if (!interestState[currentState[art]["section"]]) {
+      interestState[currentState[art]["section"]] = 1
+    } else {
+      interestState[currentState[art]["section"]] += 1
+    }
+    return interestState
   }
 
 

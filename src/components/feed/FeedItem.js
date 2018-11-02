@@ -4,22 +4,18 @@ class FeedItem extends React.Component {
 
   dynamicIcon = () => {
     if (this.props.article.bookmarked) {
-      return (<i className="material-icons bookmark">bookmark</i>)
+      return (<i className="material-icons bookmark" id={this.props.article.slug_name}>bookmark</i>)
     } else {
-      return (<i className="material-icons bookmark_border">bookmark_border</i>)
+      return (<i className="material-icons bookmark_border" id={this.props.article.slug_name}>bookmark_border</i>)
     }
   }
 
-  testButton = (event) => {
-    debugger
-    console.log(event.target)
-  }
+
 
 
 
   render() {
 
-    console.log("feed item?")
     const articleDate = `${(new Date(this.props.article.updated_date)).getMonth() + 1}/${(new Date(this.props.article.updated_date)).getDate()}/${(new Date(this.props.article.updated_date)).getFullYear()}`;
 
     return (
@@ -55,7 +51,7 @@ class FeedItem extends React.Component {
 
               <span className="wire-item-buttons">
                 <button className="readLater" id={this.props.article.slug_name} onClick={this.props.addBookmark}>
-                  x
+                  {this.dynamicIcon()}
                 </button>
               </span>
             </div>
