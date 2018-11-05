@@ -6,7 +6,7 @@ class FeedItem extends React.Component {
     if (this.props.article.bookmarked) {
       return (<i className="material-icons bookmark" id={this.props.article.slug_name}>bookmark</i>)
     } else {
-      return (<i className="material-icons bookmark_border" id={this.props.article.slug_name}>bookmark_border</i>)
+      return (<i className="material-icons bookmark_border" id={this.props.article.slug_name} className={this.props.article.section}>bookmark_border</i>)
     }
   }
 
@@ -50,7 +50,7 @@ class FeedItem extends React.Component {
               </div>
 
               <span className="wire-item-buttons">
-                <button className="readLater" id={this.props.article.slug_name} onClick={this.props.addBookmark}>
+                <button className="readLater" id={this.props.article.slug_name} className={this.props.article.section} onClick={this.props.addBookmark}>
                   {this.dynamicIcon()}
                 </button>
               </span>

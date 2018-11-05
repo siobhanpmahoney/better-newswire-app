@@ -2,7 +2,9 @@ import React from 'react'
 import ViewedItem from './ViewedItem'
 
 class ViewedContainer extends React.Component {
+
   render() {
+    console.log("ViewedContainer props: ", this.props)
     let {viewed} = this.props
     return (
       <div>Viewed

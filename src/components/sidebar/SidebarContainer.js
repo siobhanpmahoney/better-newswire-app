@@ -4,7 +4,6 @@ import ViewedContainer from './viewed/ViewedContainer'
 
 class SidebarContainer extends React.Component {
   render() {
-    console.log("in sidebar container — props.bookmarks", this.props.bookmarks)
     return (
       <div>
         <h3>Sidebar Container Here</h3>
